@@ -321,7 +321,7 @@
 
     <script>
         // Configuration JSONBin
-        const BIN_ID = '69063b0fae596e708f3cf205';
+        const BIN_ID = '69063e3ed0ea881f40cc39f4';
         const API_KEY = '$2a$10$bomA4SsvndnxG6mGd5nde.wTfQEckOa9/74DJIruAGkznwpFgKlJi';
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
         
