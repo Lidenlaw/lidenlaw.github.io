@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -210,6 +210,17 @@
             transform: scale(0.95);
         }
 
+        .vote-button:disabled {
+            background: #95a5a6 !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+        }
+
+        .vote-button:disabled:hover {
+            background: #95a5a6 !important;
+            transform: none !important;
+        }
+
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -409,9 +420,17 @@
 
         // Fonction pour voter
         async function vote(movieId) {
+            // Vérifier si déjà voté
+            if (hasVoted(movieId)) {
+                alert('Vous avez déjà voté pour ce film!');
+                return;
+            }
+            
             const movie = movies.find(m => m.id === movieId);
             if (movie) {
                 movie.votes++;
+                votedMovies.push(movieId);
+                saveVotedMovies();
                 renderMovies();
                 await saveMovies();
                 
@@ -442,7 +461,9 @@
             // Trier par nombre de votes (décroissant)
             const sortedMovies = [...movies].sort((a, b) => b.votes - a.votes);
             
-            moviesList.innerHTML = sortedMovies.map((movie, index) => `
+            moviesList.innerHTML = sortedMovies.map((movie, index) => {
+                const voted = hasVoted(movie.id);
+                return `
                 <div class="movie-item" data-movie-id="${movie.id}">
                     <div class="movie-info">
                         <div class="movie-rank">#${index + 1}</div>
@@ -450,12 +471,14 @@
                     </div>
                     <div class="vote-section">
                         <div class="vote-count">${movie.votes} vote${movie.votes !== 1 ? 's' : ''}</div>
-                        <button class="vote-button" onclick="vote(${movie.id})">
-                            <span>+1</span>
-                        </button>
+                        ${voted 
+                            ? '<button class="vote-button" disabled style="background: #95a5a6; cursor: not-allowed;"><span>✓ Voté</span></button>'
+                            : `<button class="vote-button" onclick="vote(${movie.id})"><span>+1</span></button>`
+                        }
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Fonction pour échapper le HTML
